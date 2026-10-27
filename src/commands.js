@@ -49,3 +49,45 @@ export function registerCommands(bot) {
   // این خط (Echo) همیشه باید آخرین دستور باشه 👇
   bot.on("message:text", (ctx) => ctx.reply(ctx.message.text))
 }
+  }); // 👈 این همون بسته شدن دستور price هست که بالای کدت داری
+
+  // 👇👇 شروع دستور جدید سیگنال 👇👇
+  bot.command("signal", async (ctx) => {
+    try {
+      const res = await fetch("https://raw.githubusercontent.com/iran-market/iran-market.github.io/main/data/popular.json");
+      const json = await res.json();
+      const data = json.data;
+      const gold = data.find(item => item.symbol === "GOLD_18K_IRR");
+
+      if (!gold) {
+        return ctx.reply("قیمت طلا در دسترس نیست.");
+      }
+
+      const currentPrice = gold.price;
+      
+      // 🚨 آستانه‌های خرید و فروش (اینجا رو بعدا می‌تونی تغییر بدی) 🚨
+      const BUY_THRESHOLD = 3200000;  
+      const SELL_THRESHOLD = 3500000; 
+
+      const format = (num) => num.toLocaleString("fa-IR");
+      let signalMsg = "";
+
+      if (currentPrice <= BUY_THRESHOLD) {
+        signalMsg = `🟢 سیگنال خرید!\n\nقیمت فعلی طلا: ${format(currentPrice)} تومان\nقیمت به زیر آستانه خرید شما (${format(BUY_THRESHOLD)}) رسیده است.`;
+      } else if (currentPrice >= SELL_THRESHOLD) {
+        signalMsg = `🔴 سیگنال فروش!\n\nقیمت فعلی طلا: ${format(currentPrice)} تومان\nقیمت به بالای آستانه فروش شما (${format(SELL_THRESHOLD)}) رسیده است.`;
+      } else {
+        signalMsg = `⚪️ سیگنال خاصی وجود ندارد.\n\nقیمت فعلی طلا: ${format(currentPrice)} تومان\nقیمت در محدوده امن (بین خرید و فروش) قرار دارد.`;
+      }
+
+      await ctx.reply(signalMsg);
+
+    } catch (error) {
+      await ctx.reply("خطایی در دریافت سیگنال رخ داد.");
+    }
+  });
+  // 👆👆 پایان دستور جدید سیگنال 👆👆
+
+  // این خط (Echo) همیشه باید آخرین دستور باشه 👇
+  bot.on("message:text", (ctx) => ctx.reply(ctx.message.text))
+}
