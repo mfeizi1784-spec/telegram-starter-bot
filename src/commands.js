@@ -19,7 +19,9 @@ export function registerCommands(bot) {
 
   bot.callbackQuery("ping", (ctx) => ctx.answerCallbackQuery({ text: "pong" }))
 
-  bot.on("message:text", (ctx) => ctx.reply(ctx.message.text))
-
+  // دستور شخصی‌سازی شده خودت 👇
   bot.command("hello", (ctx) => ctx.reply("سلام محسن! من یک ربات شخصی‌سازی شده هستم."));
+
+  // این خط تکرار پیام (Echo) باید همیشه آخرین دستور باشه 👇
+  bot.on("message:text", (ctx) => ctx.reply(ctx.message.text))
 }
