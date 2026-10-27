@@ -1,3 +1,4 @@
+
 // Your bot's behaviour. Add commands here; grammy ...
 
 import { InlineKeyboard } from "grammy"
@@ -10,7 +11,7 @@ export function registerCommands(bot) {
   )
 
   bot.command("help", (ctx) =>
-    ctx.reply(["Commands:", "/start say hello", "/help this list", "/ping check", "/id get id", "/price gold & usd"]),
+    ctx.reply(["Commands:", "/start say hello", "/help this list", "/ping check", "/id get id", "/price gold & usd", "/signal buy or sell"]),
   )
 
   bot.command("ping", (ctx) => ctx.reply("pong"))
@@ -41,17 +42,11 @@ export function registerCommands(bot) {
 
       await ctx.reply(message);
     } catch (error) {
-      console.error("خطا در دریافت قیمت:", error);
-      await ctx.reply("خطایی در دریافت قیمت رخ داد. لطفاً بعداً دوباره تلاش کنید.");
+      await ctx.reply("خطایی در دریافت قیمت رخ داد.");
     }
   });
 
-  // این خط (Echo) همیشه باید آخرین دستور باشه 👇
-  bot.on("message:text", (ctx) => ctx.reply(ctx.message.text))
-}
-  }); // 👈 این همون بسته شدن دستور price هست که بالای کدت داری
-
-  // 👇👇 شروع دستور جدید سیگنال 👇👇
+  // دستور سیگنال خرید و فروش طلا 👇
   bot.command("signal", async (ctx) => {
     try {
       const res = await fetch("https://raw.githubusercontent.com/iran-market/iran-market.github.io/main/data/popular.json");
@@ -65,7 +60,7 @@ export function registerCommands(bot) {
 
       const currentPrice = gold.price;
       
-      // 🚨 آستانه‌های خرید و فروش (اینجا رو بعدا می‌تونی تغییر بدی) 🚨
+      // 🚨 برای تغییر آستانه‌های خرید و فروش، فقط این دو عدد را تغییر دهید 🚨
       const BUY_THRESHOLD = 3200000;  
       const SELL_THRESHOLD = 3500000; 
 
@@ -86,7 +81,6 @@ export function registerCommands(bot) {
       await ctx.reply("خطایی در دریافت سیگنال رخ داد.");
     }
   });
-  // 👆👆 پایان دستور جدید سیگنال 👆👆
 
   // این خط (Echo) همیشه باید آخرین دستور باشه 👇
   bot.on("message:text", (ctx) => ctx.reply(ctx.message.text))
