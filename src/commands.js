@@ -61,8 +61,8 @@ export function registerCommands(bot) {
       const currentPrice = gold.price;
       
       // 🚨 برای تغییر آستانه‌های خرید و فروش، فقط این دو عدد را تغییر دهید 🚨
-      const BUY_THRESHOLD = 3200000;  
-      const SELL_THRESHOLD = 3500000; 
+      const BUY_THRESHOLD = 2500000;  
+      const SELL_THRESHOLD = 2700000; 
 
       const format = (num) => num.toLocaleString("fa-IR");
       let signalMsg = "";
