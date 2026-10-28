@@ -85,36 +85,3 @@ export function registerCommands(bot) {
   // این خط (Echo) همیشه باید آخرین دستور باشه 👇
   bot.on("message:text", (ctx) => ctx.reply(ctx.message.text))
 }
-import logging
-
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-
-def send_report_to_telegram(text):
-    try:
-        # تقسیم متن در صورت طولانی بودن
-        if len(text) > 4000:
-            for i in range(0, len(text), 4000):
-                bot.send_message(TELEGRAM_CHAT_ID, text[i:i+4000])
-        else:
-            bot.send_message(TELEGRAM_CHAT_ID, text)
-        logging.info("گزارش با موفقیت ارسال شد.")
-    except Exception as e:
-        logging.error(f"خطا در ارسال گزارش به تلگرام: {e}")
-
-def run_agent_once():
-    try:
-        stocks = fetch_market_data()
-        if not stocks:
-            logging.warning("دیتایی برای پردازش دریافت نشد.")
-            return
-
-        # شرط فیلتر باید کامل نوشته شود
-        filtered = [s for s in stocks if s.get("BuyRealVolume", 0) > 0]
-        if not filtered:
-            logging.info("هیچ نمادی شرایط فیلتر را احراز نکرد.")
-            return
-
-        report = build_report(filtered)
-        send_report_to_telegram(report)
-    except Exception as e:
-        logging.exception(f"خطای غیرمنتظره در اجرای Agent: {e}")
