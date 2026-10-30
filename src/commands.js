@@ -34,8 +34,7 @@ export function registerCommands(bot) {
 
     if (!conversationHistory[chatId]) {
       conversationHistory[chatId] = [
-        // دستورات سخت‌گیرانه برای زبان فارسی
-        { role: "system", content: "تو یک دستیار هوشمند، متخصص و صمیمی در بازار بورس تهران هستی. قانون بسیار مهم: تو باید فقط و فقط به زبان فارسی روان و محاوره‌ای پاسخ دهی. تحت هیچ شرایطی از کلمات، حروف یا اصطلاحات انگلیسی استفاده نکن. حتی اصطلاحات تخصصی بورس (مثل TSE یا Market Cap) را هم معادل فارسی آن (بورس تهران، ارزش بازار) بنویس. پاسخ‌هایت باید دقیق، مفید و بدون حاشیه باشد." }
+        { role: "system", content: "تو یک کارشناس ارشد بورس هستی. قوانین تو: 1. فقط و فقط به زبان فارسی روان و محاوره‌ای جواب بده. 2. استفاده از کلمات انگلیسی، چینی یا عربی به شدت ممنوع است. 3. اصطلاحات تخصصی را معادل‌سازی کن (مثلاً به جای Goods بگو کالا، به جای Services بگو خدمات، به جای Investors بگو سرمایه‌گذاران، به جای indirect بگو غیرمستقیم). 4. پاسخ‌هایت کوتاه، مفید و دقیق باشد." }
       ];
     }
 
@@ -44,10 +43,10 @@ export function registerCommands(bot) {
 
     try {
       const response = await client.chat.completions.create({
-        // ارتقای مدل به نسخه ۸ میلیاردی که فارسی رو بهتر می‌فهمه
-        model: process.env.LLM_MODEL || "@cf/meta/llama-3.1-8b-instruct",
+        // ارتقا به قوی‌ترین مدل رایگان کلادفلر
+        model: process.env.LLM_MODEL || "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
         messages: conversationHistory[chatId].slice(-10),
-        temperature: 0.3, // کاهش خلاقیت برای جلوگیری از پرت و پلا گفتن
+        temperature: 0.1, // حداقل خلاقیت برای جلوگیری از توهم
       });
 
       const botReply = response.choices[0]?.message?.content || "متاسفم، نتونستم جوابی پیدا کنم.";
