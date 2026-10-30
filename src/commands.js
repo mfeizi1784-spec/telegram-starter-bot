@@ -1,7 +1,6 @@
 import { InlineKeyboard } from "grammy";
 import OpenAI from "openai";
 
-// تنظیمات هوش مصنوعی (مستقیماً اینجا)
 const client = new OpenAI({
   apiKey: process.env.CLOUDFLARE_API_TOKEN,
   baseURL: `https://api.cloudflare.com/client/v4/accounts/${process.env.CLOUDFLARE_ACCOUNT_ID}/ai/v1`,
@@ -27,16 +26,16 @@ export function registerCommands(bot) {
     await ctx.reply("کافیه هر سوالی داری بنویسی، من جواب می‌دم!");
   });
 
-  // هندل کردن پیام‌های متنی
   bot.on("message:text", async (ctx) => {
-    if (ctx.message.text.startsWith("/")) return; // اگه دستور بود، رد شو
+    if (ctx.message.text.startsWith("/")) return; 
 
     const chatId = ctx.chat.id;
     const userMessage = ctx.message.text;
 
     if (!conversationHistory[chatId]) {
       conversationHistory[chatId] = [
-        { role: "system", content: "You are a helpful and intelligent Persian AI assistant specialized in stock market (Bourse) analysis. Answer clearly and concisely in Persian." }
+        // دستورات سخت‌گیرانه برای زبان فارسی
+        { role: "system", content: "تو یک دستیار هوشمند، متخصص و صمیمی در بازار بورس تهران هستی. قانون بسیار مهم: تو باید فقط و فقط به زبان فارسی روان و محاوره‌ای پاسخ دهی. تحت هیچ شرایطی از کلمات، حروف یا اصطلاحات انگلیسی استفاده نکن. حتی اصطلاحات تخصصی بورس (مثل TSE یا Market Cap) را هم معادل فارسی آن (بورس تهران، ارزش بازار) بنویس. پاسخ‌هایت باید دقیق، مفید و بدون حاشیه باشد." }
       ];
     }
 
@@ -45,9 +44,10 @@ export function registerCommands(bot) {
 
     try {
       const response = await client.chat.completions.create({
-        model: process.env.LLM_MODEL || "@cf/meta/llama-3.2-3b-instruct",
+        // ارتقای مدل به نسخه ۸ میلیاردی که فارسی رو بهتر می‌فهمه
+        model: process.env.LLM_MODEL || "@cf/meta/llama-3.1-8b-instruct",
         messages: conversationHistory[chatId].slice(-10),
-        temperature: 0.7,
+        temperature: 0.3, // کاهش خلاقیت برای جلوگیری از پرت و پلا گفتن
       });
 
       const botReply = response.choices[0]?.message?.content || "متاسفم، نتونستم جوابی پیدا کنم.";
